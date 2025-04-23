@@ -25,7 +25,7 @@
   "linkai_api_key": "",
   "linkai_app_code": "",
   "use_custom_api": false,
-  "custom_api_url": "http://your-api-url/chat",
+  "custom_api_url": "https://mindos-prek8s.mindverse.ai/gate/in//rest/third/v1/chat/completion",
   "custom_api_key": "",
   "custom_api_timeout": 30,
   "custom_api_userId": ""
