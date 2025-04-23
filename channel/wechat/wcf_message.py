@@ -21,6 +21,20 @@ class WechatfMessage(ChatMessage):
         :param wcf_msg: wcferry消息对象
         :param is_group: 是否是群消息
         """
+        # 打印WxMsg对象的详细信息，帮助调试
+        logger.info(f"WechatfMessage初始化: WxMsg对象属性 = {dir(wcf_msg)}")
+        logger.info(f"WxMsg对象类型 = {type(wcf_msg).__name__}")
+        
+        # 安全地访问常用属性，并记录日志
+        msg_attrs = {
+            "id": getattr(wcf_msg, 'id', 'Unknown'),
+            "type": getattr(wcf_msg, 'type', 'Unknown'),
+            "sender": getattr(wcf_msg, 'sender', 'Unknown'),
+            "ts": getattr(wcf_msg, 'ts', 'Unknown'),
+            "_is_group": getattr(wcf_msg, '_is_group', False)
+        }
+        logger.info(f"WxMsg属性值 = {msg_attrs}")
+        
         super().__init__(wcf_msg)
         self.msg_id = wcf_msg.id
         self.create_time = wcf_msg.ts  # 使用消息时间戳
@@ -33,6 +47,8 @@ class WechatfMessage(ChatMessage):
             self.ctype = ContextType.TEXT
             self.content = wcf_msg.content
         else:
+            # 添加更详细的日志信息，但保持原始逻辑
+            logger.debug(f"Unsupported message type: {wcf_msg.type}, message ID: {wcf_msg.id}, sender: {wcf_msg.sender}")
             raise NotImplementedError(f"Unsupported message type: {wcf_msg.type}")
 
         # 设置发送者和接收者信息

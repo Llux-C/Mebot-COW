@@ -183,6 +183,12 @@ available_setting = {
     "Minimax_group_id": "",
     "Minimax_base_url": "",
     "web_port": 9899,
+    # 自定义API配置
+    "use_custom_api": False,  # 是否使用自定义API
+    "custom_api_url": "http://your-api-url/chat",  # 自定义API的URL
+    "custom_api_key": "",  # 自定义API的密钥
+    "custom_api_timeout": 30,  # 自定义API的超时时间
+    "custom_api_userId": "",  # 自定义API的用户ID
 }
 
 

@@ -87,7 +87,29 @@ class Bridge(object):
         return self.btype[typename]
 
     def fetch_reply_content(self, query, context: Context) -> Reply:
-        return self.get_bot("chat").reply(query, context)
+        # 打印完整的context内容
+        logger.info(f"完整的Context内容: {context}")
+        
+        # 打印context中的所有键值对
+        context_dict = {}
+        for key in dir(context):
+            if not key.startswith('_') and key not in ['type', 'content', 'kwargs']:
+                context_dict[key] = getattr(context, key)
+        
+        # 将kwargs中的所有键值对添加到context_dict
+        for key, value in context.kwargs.items():
+            context_dict[key] = value
+        
+        logger.info(f"分解后的Context内容: {context_dict}")
+        
+        # 调用后端 API
+        reply = self.get_bot("chat").reply(query, context)
+        
+        # 添加详细日志，记录响应结果
+        if reply.content and len(reply.content) < 500:
+            logger.info(f"响应内容: {reply.content}")
+        
+        return reply
 
     def fetch_voice_to_text(self, voiceFile) -> Reply:
         return self.get_bot("voice_to_text").voiceToText(voiceFile)

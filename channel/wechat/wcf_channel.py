@@ -66,6 +66,22 @@ class WechatfChannel(ChatChannel):
             try:
                 msg = self.wcf.get_msg()
                 if msg:
+                    # 添加详细日志，记录接收到的消息
+                    # 打印WxMsg对象的所有属性名称，帮助调试
+                    logger.info(f"接收到消息对象属性: {dir(msg)}")
+                    
+                    # 安全地访问属性，避免属性不存在的错误
+                    msg_info = {
+                        "id": getattr(msg, 'id', 'Unknown'),
+                        "type": getattr(msg, 'type', 'Unknown'),
+                        "sender": getattr(msg, 'sender', 'Unknown'),
+                        "content_length": len(getattr(msg, 'content', '')) if hasattr(msg, 'content') else 0
+                    }
+                    
+                    logger.info(f"接收到消息: {msg_info}")
+                    
+                    if hasattr(msg, 'content') and msg.content and len(msg.content) < 500:
+                        logger.info(f"消息内容: {msg.content}")
                     self._handle_message(msg)
             except Empty:
                 continue
@@ -93,8 +109,11 @@ class WechatfChannel(ChatChannel):
                                             msg=cmsg)
             if context:
                 self.produce(context)
+        except NotImplementedError as e:
+            # 添加更详细的日志信息，但保持原始逻辑
+            logger.error(f"处理消息失败: 不支持的消息类型 {msg.type}, 消息ID: {msg.id}, 发送者: {msg.sender}, 内容长度: {len(msg.content) if hasattr(msg, 'content') else 'N/A'}")
         except Exception as e:
-            logger.error(f"处理消息失败: {e}")
+            logger.error(f"处理消息失败: {e}, 消息类型: {msg.type if hasattr(msg, 'type') else 'Unknown'}")
 
     def _clean_expired_msgs(self, expire_time: float = 60):
         """
@@ -114,6 +133,12 @@ class WechatfChannel(ChatChannel):
             logger.error("receiver is empty")
             return
 
+        # 添加详细日志，记录准备发送的消息
+        logger.info(f"准备发送消息到微信: 接收者={receiver}, 消息类型={reply.type}, 内容长度={len(reply.content) if reply.content else 0}")
+        if reply.content and len(reply.content) < 500:
+            logger.info(f"发送内容: {reply.content}")
+        logger.info(f"上下文信息: 会话标识={context.get('session_id', 'None')}, 是否群聊={context.get('isgroup', False)}")
+
         try:
             if reply.type == ReplyType.TEXT:
                 # 处理@信息
@@ -122,10 +147,14 @@ class WechatfChannel(ChatChannel):
                     if context["msg"].actual_user_id:
                         at_list = [context["msg"].actual_user_id]
                 at_str = ",".join(at_list) if at_list else ""
+                logger.info(f"调用微信发送接口: send_text, 接收者={receiver}, @列表={at_str}")
                 self.wcf.send_text(reply.content, receiver, at_str)
+                logger.info(f"消息发送成功: 接收者={receiver}")
 
             elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
+                logger.info(f"调用微信发送接口: send_text(错误/信息类型), 接收者={receiver}")
                 self.wcf.send_text(reply.content, receiver)
+                logger.info(f"消息发送成功: 接收者={receiver}")
             else:
                 logger.error(f"暂不支持的消息类型: {reply.type}")
 

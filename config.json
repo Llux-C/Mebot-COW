@@ -1,5 +1,5 @@
 {
-  "channel_type": "wx",
+  "channel_type": "wcf",
   "model": "",
   "open_ai_api_key": "YOUR API KEY",
   "claude_api_key": "YOUR API KEY",
@@ -9,9 +9,10 @@
   "proxy": "",
   "hot_reload": false,
   "single_chat_prefix": ["bot", "@bot"],
-  "single_chat_reply_prefix": "[bot] ",
+  "single_chat_reply_prefix": "",
   "group_chat_prefix": ["@bot"],
-  "group_name_white_list": ["ChatGPT测试群", "ChatGPT测试群2"],
+  "group_name_white_list": ["测试", "ChatGPT测试群2"],
+  "group_chat_in_one_session": ["测试"],
   "image_create_prefix": ["画"],
   "speech_recognition": true,
   "group_speech_recognition": false,
@@ -24,9 +25,9 @@
   "use_linkai": false,
   "linkai_api_key": "",
   "linkai_app_code": "",
-  "use_custom_api": false,
-  "custom_api_url": "https://mindos-prek8s.mindverse.ai/gate/in//rest/third/v1/chat/completion",
+  "use_custom_api": true,
+  "custom_api_url": "https://mindos-prek8s.mindverse.ai/gate/in/rest/third/v1/chat/completion",
   "custom_api_key": "",
   "custom_api_timeout": 30,
-  "custom_api_userId": ""
+  "custom_api_userId": "c1gge"
 }

@@ -125,6 +125,12 @@ class CustomAPIBot(Bot):
                 "userId": userId
             }
             
+            # 打印详细的请求参数
+            logger.info(f"[CUSTOM_API] 请求头: {headers}")
+            logger.info(f"[CUSTOM_API] 请求体: {json.dumps(data, ensure_ascii=False)}")
+            logger.info(f"[CUSTOM_API] 请求URL: {self.api_url}")
+            logger.info(f"[CUSTOM_API] 超时时间: {self.timeout}秒")
+            
             # 发送请求
             logger.debug(f"[CUSTOM_API] Sending request to {self.api_url}")
             response = requests.post(
@@ -136,11 +142,23 @@ class CustomAPIBot(Bot):
             
             # 检查响应状态
             if response.status_code == 200:
+                # 打印原始响应内容
+                logger.info(f"[CUSTOM_API] 原始响应内容: {response.text}")
+                
                 try:
                     result = response.json()
-                    # 假设 API返回格式为 {"response": "回复内容"}
-                    # 根据你的实际API调整这里的解析逻辑
-                    if "response" in result:
+                    # 打印解析后的JSON响应
+                    logger.info(f"[CUSTOM_API] 解析后的JSON响应: {json.dumps(result, ensure_ascii=False)}")
+                    
+                    # 处理API返回的格式: {"data": {"response": "回复内容"}, "code": 0}
+                    # 根据实际API调整解析逻辑
+                    if "data" in result and "response" in result["data"]:
+                        response_content = result["data"]["response"]
+                        logger.info(f"[CUSTOM_API] 最终提取的响应内容: {response_content}")
+                        return {"success": True, "content": response_content}
+                    elif "response" in result:
+                        # 兼容直接包含 response 字段的格式
+                        logger.info(f"[CUSTOM_API] 最终提取的响应内容: {result['response']}")
                         return {"success": True, "content": result["response"]}
                     else:
                         logger.error(f"[CUSTOM_API] Unexpected response format: {result}")
