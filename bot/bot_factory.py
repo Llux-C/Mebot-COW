@@ -71,6 +71,10 @@ def create_bot(bot_type):
     elif bot_type == const.MODELSCOPE:
         from bot.modelscope.modelscope_bot import ModelScopeBot
         return ModelScopeBot()
+    
+    elif bot_type == const.CUSTOM_API:
+        from bot.custom_api.custom_api_bot import CustomAPIBot
+        return CustomAPIBot()
 
 
     raise RuntimeError

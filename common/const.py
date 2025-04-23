@@ -9,6 +9,7 @@ CLAUDEAI = "claude"  # 使用cookie的历史模型
 CLAUDEAPI= "claudeAPI"  # 通过Claude api调用模型
 QWEN = "qwen"  # 旧版通义模型
 QWEN_DASHSCOPE = "dashscope"  # 通义新版sdk和api key
+CUSTOM_API = "custom_api"  # 自定义API
 
 
 GEMINI = "gemini"  # gemini-1.0-pro

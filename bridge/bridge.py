@@ -54,6 +54,10 @@ class Bridge(object):
             
             if model_type in ["abab6.5-chat"]:
                 self.btype["chat"] = const.MiniMax
+                
+            # 检查是否启用自定义API
+            if conf().get("use_custom_api", False):
+                self.btype["chat"] = const.CUSTOM_API
 
             if conf().get("use_linkai") and conf().get("linkai_api_key"):
                 self.btype["chat"] = const.LINKAI
